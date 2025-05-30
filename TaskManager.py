@@ -1,7 +1,8 @@
 import os
 import json
 from datetime import datetime
-#ayudaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+#ayudaaaaaaaaaaaaaaaaaaaaaaaaaaaa   prueba de fixed cosas
+#otorios
 class TaskManager:
     def __init__(self):
         self.tasks = []
@@ -14,7 +15,7 @@ class TaskManager:
                 with open(self.file_name, "r") as file:
                     self.tasks = json.load(file)
             except:
-                print("Error loading task data. Starting with empty task list.")
+                print("Error loading task data. Starting with empty task list.  ")
                 self.tasks = []
     
     def save_tasks(self):
