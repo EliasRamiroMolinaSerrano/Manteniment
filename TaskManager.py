@@ -1,8 +1,7 @@
 import os
 import json
 from datetime import datetime
-#ayudaaaaaaaaaaaaaaaaaaaaaaaaaaaa   prueba de fixed cosas
-#otorios
+
 class TaskManager:
     def __init__(self):
         self.tasks = []
@@ -23,7 +22,6 @@ class TaskManager:
             json.dump(self.tasks, file)
     
     def add_task(self, title, description):
-        # Validar que ni el título ni la descripción estén vacíos
         if not title.strip() or not description.strip():
             print("Error: el título y la descripción no pueden estar vacíos.")
             return
@@ -39,7 +37,6 @@ class TaskManager:
         self.save_tasks()
         print(f"Task '{title}' added successfully!")
 
-    #New function were added to edit tasks
     def edit_task(self, task_id, new_title, new_description):
         for task in self.tasks:
             if task["id"] == task_id:
@@ -50,8 +47,19 @@ class TaskManager:
                 return
         print(f"Task with ID {task_id} not found.")
 
-    def list_tasks(self):
-        if not self.tasks:
+    def list_tasks(self, filter_status=None, sort_order=None):
+        tasks_to_display = self.tasks.copy()
+
+        # Filtrar por estado si se especifica
+        if filter_status:
+            tasks_to_display = [task for task in tasks_to_display if task["status"].lower() == filter_status.lower()]
+
+        # Ordenar por fecha si se especifica
+        if sort_order:
+            tasks_to_display.sort(key=lambda x: datetime.strptime(x["created_date"], "%Y-%m-%d %H:%M:%S"),
+                                  reverse=(sort_order.lower() == "desc"))
+
+        if not tasks_to_display:
             print("No tasks found.")
             return
         
@@ -59,7 +67,7 @@ class TaskManager:
         print(f"{'ID':<5} {'TITLE':<20} {'STATUS':<10} {'CREATED DATE':<20} {'DESCRIPTION':<30}")
         print("-" * 80)
         
-        for task in self.tasks:
+        for task in tasks_to_display:
             print(f"{task['id']:<5} {task['title'][:18]:<20} {task['status']:<10} {task['created_date']:<20} {task['description'][:28]:<30}")
         
         print("=" * 80 + "\n")
@@ -67,7 +75,6 @@ class TaskManager:
     def mark_complete(self, task_id):
         for task in self.tasks:
             if task["id"] == task_id:
-                # Confirmación antes de marcar como completada
                 confirm = input(f"Are you sure you want to mark task '{task['title']}' as complete? (y/n): ").lower()
                 if confirm == "y":
                     task["status"] = "Completed"
@@ -81,7 +88,6 @@ class TaskManager:
     def delete_task(self, task_id):
         for i, task in enumerate(self.tasks):
             if task["id"] == task_id:
-                # Confirmación antes de eliminar
                 confirm = input(f"Are you sure you want to delete task '{task['title']}'? (y/n): ").lower()
                 if confirm == "y":
                     removed = self.tasks.pop(i)
@@ -95,7 +101,6 @@ class TaskManager:
 
 def main():
     task_manager = TaskManager()
-    #added 6 for edit task option
     while True:
         print("\nTASK MANAGER")
         print("1. Add Task")
@@ -113,7 +118,19 @@ def main():
             task_manager.add_task(title, description)
         
         elif choice == "2":
-            task_manager.list_tasks()
+            # Preguntar si quiere filtrar o no
+            filter_choice = input("Do you want to filter by status? (y/n): ").lower()
+            filter_status = None
+            if filter_choice == "y":
+                filter_status = input("Enter status to filter (Pending/Completed): ")
+
+            # Preguntar si quiere ordenar o no
+            sort_choice = input("Do you want to sort by creation date? (y/n): ").lower()
+            sort_order = None
+            if sort_choice == "y":
+                sort_order = input("Enter sort order (asc/desc): ")
+
+            task_manager.list_tasks(filter_status=filter_status, sort_order=sort_order)
         
         elif choice == "3":
             task_id = int(input("Enter task ID to mark as complete: "))
@@ -127,7 +144,6 @@ def main():
             print("Exiting Task Manager. Goodbye!")
             break
         
-            #ESTE es la nueva opcion para editar tareas 
         elif choice == "6":
             task_manager.list_tasks()
             task_id = int(input("Enter task ID to edit: "))
