@@ -15,7 +15,7 @@ class TaskManager:
                 with open(self.file_name, "r") as file:
                     self.tasks = json.load(file)
             except:
-                print("Error loading task data. Starting with empty task list.  ")
+                print("Error loading task data. Starting with empty task list.")
                 self.tasks = []
     
     def save_tasks(self):
@@ -50,7 +50,6 @@ class TaskManager:
                 return
         print(f"Task with ID {task_id} not found.")
 
-    
     def list_tasks(self):
         if not self.tasks:
             print("No tasks found.")
@@ -68,18 +67,28 @@ class TaskManager:
     def mark_complete(self, task_id):
         for task in self.tasks:
             if task["id"] == task_id:
-                task["status"] = "Completed"
-                self.save_tasks()
-                print(f"Task '{task['title']}' marked as completed!")
+                # Confirmación antes de marcar como completada
+                confirm = input(f"Are you sure you want to mark task '{task['title']}' as complete? (y/n): ").lower()
+                if confirm == "y":
+                    task["status"] = "Completed"
+                    self.save_tasks()
+                    print(f"Task '{task['title']}' marked as completed!")
+                else:
+                    print("Operation canceled.")
                 return
         print(f"Task with ID {task_id} not found.")
     
     def delete_task(self, task_id):
         for i, task in enumerate(self.tasks):
             if task["id"] == task_id:
-                removed = self.tasks.pop(i)
-                self.save_tasks()
-                print(f"Task '{removed['title']}' deleted successfully!")
+                # Confirmación antes de eliminar
+                confirm = input(f"Are you sure you want to delete task '{task['title']}'? (y/n): ").lower()
+                if confirm == "y":
+                    removed = self.tasks.pop(i)
+                    self.save_tasks()
+                    print(f"Task '{removed['title']}' deleted successfully!")
+                else:
+                    print("Operation canceled.")
                 return
         print(f"Task with ID {task_id} not found.")
 
