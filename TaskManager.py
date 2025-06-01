@@ -39,6 +39,17 @@ class TaskManager:
         self.save_tasks()
         print(f"Task '{title}' added successfully!")
 
+    #New function were added to edit tasks
+    def edit_task(self, task_id, new_title, new_description):
+        for task in self.tasks:
+            if task["id"] == task_id:
+                task["title"] = new_title
+                task["description"] = new_description
+                self.save_tasks()
+                print(f"Task ID {task_id} updated successfully!")
+                return
+        print(f"Task with ID {task_id} not found.")
+
     
     def list_tasks(self):
         if not self.tasks:
@@ -75,7 +86,7 @@ class TaskManager:
 
 def main():
     task_manager = TaskManager()
-    
+    #added 6 for edit task option
     while True:
         print("\nTASK MANAGER")
         print("1. Add Task")
@@ -83,8 +94,9 @@ def main():
         print("3. Mark Task as Complete")
         print("4. Delete Task")
         print("5. Exit")
+        print("6. Edit Task")
         
-        choice = input("Enter your choice (1-5): ")
+        choice = input("Enter your choice (1-6): ")
         
         if choice == "1":
             title = input("Enter task title: ")
@@ -106,6 +118,14 @@ def main():
             print("Exiting Task Manager. Goodbye!")
             break
         
+            #ESTE es la nueva opcion para editar tareas 
+        elif choice == "6":
+            task_manager.list_tasks()
+            task_id = int(input("Enter task ID to edit: "))
+            new_title = input("Enter new title: ")
+            new_description = input("Enter new description: ")
+            task_manager.edit_task(task_id, new_title, new_description)
+    
         else:
             print("Invalid choice. Please try again.")
 
