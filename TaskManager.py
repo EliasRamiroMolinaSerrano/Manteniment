@@ -23,6 +23,11 @@ class TaskManager:
             json.dump(self.tasks, file)
     
     def add_task(self, title, description):
+        # Validar que ni el título ni la descripción estén vacíos
+        if not title.strip() or not description.strip():
+            print("Error: el título y la descripción no pueden estar vacíos.")
+            return
+
         task = {
             "id": len(self.tasks) + 1,
             "title": title,
@@ -33,6 +38,7 @@ class TaskManager:
         self.tasks.append(task)
         self.save_tasks()
         print(f"Task '{title}' added successfully!")
+
     
     def list_tasks(self):
         if not self.tasks:
